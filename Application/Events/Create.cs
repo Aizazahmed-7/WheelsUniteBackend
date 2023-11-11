@@ -14,7 +14,7 @@ namespace Application.Events
         public class Command : IRequest<Result<Unit>>
         {
             public Event Event { get; set; }
-            
+
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -22,7 +22,6 @@ namespace Application.Events
             public CommandValidator()
             {
                 RuleFor(x => x.Event).SetValidator(new EventValidator());
-                
             }
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -31,12 +30,12 @@ namespace Application.Events
 
             public readonly IUserAccessor userAccessor;
 
-            public Handler(DataContext context , IUserAccessor userAccessor)
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 this.context = context;
                 this.userAccessor = userAccessor;
             }
-            
+
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == userAccessor.GetUsername());
@@ -51,13 +50,13 @@ namespace Application.Events
                 request.Event.Attendees.Add(attendee);
 
                 this.context.Events.Add(request.Event);
-                var result =  await this.context.SaveChangesAsync() > 0 ;
-                    if (!result)
-                    {
-                        return Result<Unit>.Failure("Failed to create activity");
-                    } 
+                var result = await this.context.SaveChangesAsync() > 0;
+                if (!result)
+                {
+                    return Result<Unit>.Failure("Failed to create activity");
+                }
                 return Result<Unit>.Success(Unit.Value);
-        
+
             }
 
         }
