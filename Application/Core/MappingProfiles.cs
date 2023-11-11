@@ -3,6 +3,7 @@ using Domain;
 using AutoMapper;
 using Application.Events;
 using Application.Comments;
+using Application.Posts;
 
 namespace Application.Core
 {
@@ -35,6 +36,11 @@ namespace Application.Core
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Author.DisplayName))
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url));
+
+            CreateMap<Post, PostDto>()
+            .ForMember(d => d.Username, o => o.MapFrom(s => s.AppUser.UserName))
+            .ForMember(d => d.LikesCount, o => o.MapFrom(s => s.Likes.Count))
+            .ForMember(d => d.IsLiked, o => o.MapFrom(s => s.Likes.Any(x => x.Username == currentUsername)));
 
         }
     }
