@@ -71,6 +71,11 @@ namespace Persistence
                 .WithOne(a => a.Event)
                 .HasForeignKey<Location>(aa => aa.EventId);
 
+            builder.Entity<Like>()
+                .HasOne(u => u.Post)
+                .WithMany(a => a.Likes)
+                .HasForeignKey(aa => aa.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

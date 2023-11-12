@@ -1,6 +1,3 @@
-
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Domain
 {
     public class Like
@@ -8,5 +5,6 @@ namespace Domain
         public string Id { get; set; }
         public string Username { get; set; }
         public virtual Post Post { get; set; }
+        public Guid PostId { get; set; }
     }
 }
