@@ -11,57 +11,77 @@ namespace Application.Comments
 {
     public class Create
     {
-        public class Command : IRequest<Result<CommentDto>>
+        public class Command : IRequest<Result<Unit>>
         {
-            public string Body { get; set; }
-            public Guid EventId { get; set; }
+            public string Text { get; set; }
+            public Guid PostId { get; set; }
+            public Guid CommentId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Body).NotEmpty();
-                RuleFor(x => x.EventId).NotEmpty();
+                RuleFor(x => x.Text).NotEmpty();
+                RuleFor(x => x)
+                .Must(x => x.PostId != default(Guid) ^ x.CommentId != default(Guid))
+                .WithMessage("Either PostId or CommentId should be present, but not both.");
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<CommentDto>>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
-            private readonly IMapper _mapper;
+
             private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 _context = context;
-                _mapper = mapper;
                 _userAccessor = userAccessor;
             }
-            public async Task<Result<CommentDto>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Events.FindAsync(request.EventId);
 
-                if (activity == null) return null;
 
                 var user = await _context.Users
-                    .Include(p => p.Photos)
                     .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+                if (user == null) return null;
 
-                var comment = new Comment
+                if (request.PostId == default(Guid))
                 {
-                    Author = user,
-                    Event = activity,
-                    Body = request.Body
-                };
+                    var parentComment = await _context.Comments.FindAsync(request.CommentId);
+                    if (parentComment == null) return null;
 
-                activity.Comments.Add(comment);
+                    var reply = new Reply
+                    {
+                        Author = user,
+                        Text = request.Text
+                    };
+
+                    parentComment.Replies.Add(reply);
+                }
+                else
+                {
+
+                    var post = await _context.Posts.FindAsync(request.PostId);
+                    if (post == null) return null;
+
+                    var comment = new Comment
+                    {
+                        Author = user,
+                        Post = post,
+                        Text = request.Text
+                    };
+
+                    post.Comments.Add(comment);
+                }
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) return Result<CommentDto>.Success(_mapper.Map<CommentDto>(comment));
+                if (success) return Result<Unit>.Success(Unit.Value);
 
-                return Result<CommentDto>.Failure("Failed to add comment");
+                return Result<Unit>.Failure("Failed to add comment");
             }
         }
     }

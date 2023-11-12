@@ -27,6 +27,13 @@ namespace Application
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                // var Likes = await _context.Likes.FirstOrDefaultAsync(x => x.Username == "bob");
+
+                // Console.WriteLine("Likes: " + Likes.Id);
+
+                // _context.Likes.RemoveRange(Likes);
+                _context.SaveChanges();
+
                 var post = await _context.Posts.Include(p => p.Likes).FirstOrDefaultAsync(p => p.Id == request.Id);
 
                 if (post == null) return null;

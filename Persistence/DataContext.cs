@@ -24,6 +24,8 @@ namespace Persistence
         public DbSet<Car> Cars { get; set; }
 
         public DbSet<Post> Posts { get; set; }
+
+        public DbSet<Reply> Replies { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -40,10 +42,6 @@ namespace Persistence
                 .WithMany(a => a.Attendees)
                 .HasForeignKey(aa => aa.EventId);
 
-            builder.Entity<Comment>()
-            .HasOne(a => a.Event)
-            .WithMany(c => c.Comments)
-            .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UserFollowing>(b =>
             {

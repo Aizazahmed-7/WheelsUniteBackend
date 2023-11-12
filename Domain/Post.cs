@@ -13,6 +13,7 @@ namespace Domain
         [ForeignKey("AppUser")]
         public string AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     }
 }
