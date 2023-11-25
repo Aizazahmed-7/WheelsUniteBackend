@@ -16,6 +16,7 @@ namespace Application.Core
             CreateMap<Event, EventDto>()
                 .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName));
 
+
             CreateMap<Location, LocationDto>()
                 .ForMember(d => d.Latitude, o => o.MapFrom(s => s.Latitude))
                 .ForMember(d => d.Longitude, o => o.MapFrom(s => s.Longitude));

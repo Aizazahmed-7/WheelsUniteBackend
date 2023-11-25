@@ -1,4 +1,5 @@
 
+using API.DTOs;
 using Application.Core;
 using Application.Interfaces;
 using Domain;
@@ -13,7 +14,7 @@ namespace Application.Cars
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Car car { get; set; }
+            public AddCarDTO car { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -45,9 +46,6 @@ namespace Application.Cars
                     Make = request.car.Make,
                     Model = request.car.Model,
                     Color = request.car.Color,
-                    ConditionDetails = request.car.ConditionDetails,
-                    Mileage = request.car.Mileage,
-                    Price = request.car.Price,
                 };
 
                 if (user.Cars.Count == 0)

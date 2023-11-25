@@ -1,9 +1,10 @@
+using API.DTOs;
 using Domain;
 using FluentValidation;
 
 namespace Application.Cars
 {
-    public class CarValidator : AbstractValidator<Car>
+    public class CarValidator : AbstractValidator<AddCarDTO>
     {
 
         public CarValidator()
