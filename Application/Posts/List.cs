@@ -34,11 +34,25 @@ namespace Application.Posts
             }
             public async Task<Result<List<PostDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
+                string currentUser =  _userAccessor.GetUsername();
 
+                var  profiles = await _context.Followings
+                            .Where(x => x.Observer.UserName == currentUser)
+                            .Select(u => u.Target)
+                            .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
+                            .ToListAsync();
 
+                var profileUsernames = profiles.Select(p => p.Username).ToList();
 
-                var posts = await _context.Posts.ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { currentUsername = _userAccessor.GetUsername() })
-                      .ToListAsync();
+                var posts = await _context.Posts
+                    .Where(p => profileUsernames.Contains(p.AppUser.UserName))
+                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
+                    .ToListAsync();
+
+                posts.AddRange(await _context.Posts
+                    .Where(p => !profileUsernames.Contains(p.AppUser.UserName))
+                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
+                    .ToListAsync());
 
                 return Result<List<PostDto>>.Success(posts);
             }

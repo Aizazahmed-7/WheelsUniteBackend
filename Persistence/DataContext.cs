@@ -12,20 +12,16 @@ namespace Persistence
         }
 
         public DbSet<Event> Events { get; set; }
-
         public DbSet<EventAttendee> ActivityAttendees { get; set; }
-
         public DbSet<Photo> Photos { get; set; }
-
         public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<UserFollowing> Followings { get; set; }
-
         public DbSet<Car> Cars { get; set; }
-
         public DbSet<Post> Posts { get; set; }
-
         public DbSet<Reply> Replies { get; set; }
+        public DbSet<CarForSale> CarsForSale { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -63,11 +59,6 @@ namespace Persistence
                 .HasOne(u => u.AppUser)
                 .WithMany(a => a.Cars)
                 .HasForeignKey(aa => aa.AppUserId);
-
-            builder.Entity<Event>()
-                .HasOne(u => u.Location)
-                .WithOne(a => a.Event)
-                .HasForeignKey<Location>(aa => aa.EventId);
 
             builder.Entity<Like>()
                 .HasOne(u => u.Post)

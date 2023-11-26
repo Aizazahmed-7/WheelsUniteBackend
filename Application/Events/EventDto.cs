@@ -1,4 +1,3 @@
-using Application.Events;
 
 namespace Application.Events
 {

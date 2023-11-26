@@ -35,7 +35,8 @@ namespace Application.Followers
                 var target = await _context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
 
                 if (target == null) return null;
-
+                if(target.UserName == observer.UserName) return Result<Unit>.Failure("You cannot follow yourself");
+                
                 var following = await _context.Followings.FindAsync(observer.Id, target.Id);
 
                 if (following == null)

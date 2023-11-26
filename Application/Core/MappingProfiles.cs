@@ -4,6 +4,7 @@ using AutoMapper;
 using Application.Events;
 using Application.Comments;
 using Application.Posts;
+using Application.CarForSale;
 
 namespace Application.Core
 {
@@ -15,7 +16,7 @@ namespace Application.Core
             CreateMap<Event, Event>();
             CreateMap<Event, EventDto>()
                 .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName))
-                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("dd MMM yyyy")));
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")));
 
 
             CreateMap<Location, LocationDto>()
@@ -37,7 +38,7 @@ namespace Application.Core
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url))
-                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToString("dd MMM yyyy")));
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToString("yyyy-MM-dd")));
 
             CreateMap<Reply, ReplyDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
@@ -49,6 +50,19 @@ namespace Application.Core
                 .ForMember(d => d.LikesCount, o => o.MapFrom(s => s.Likes.Count))
                 .ForMember(d => d.IsLiked, o => o.MapFrom(s => s.Likes.Any(x => x.Username == currentUsername)));
 
+            CreateMap<Domain.CarForSale , CarForSaleListDTO>()
+                .ForMember(d => d.Make , o => o.MapFrom(s => s.Car.Make))
+                .ForMember(d => d.Model , o => o.MapFrom(s => s.Car.Model))
+                .ForMember(d => d.Price , o => o.MapFrom(s => s.Car.Price))
+                .ForMember(d => d.Location , o => o.MapFrom(s => s.Location));
+
+            CreateMap<Domain.CarForSale , CarForSaleDetailsDTO>()
+                .ForMember(d => d.Car , o => o.MapFrom(s => s.Car))
+                .ForMember(d => d.Location , o => o.MapFrom(s => s.Location))
+                .ForMember(d => d.UserName , o => o.MapFrom(s => s.Car.AppUser.UserName))
+                .ForMember(d => d.Description , o => o.MapFrom(s => s.Description))
+                .ForMember(d => d.Date , o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")));
+                
         }
     }
 }

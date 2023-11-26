@@ -8,6 +8,7 @@ namespace Domain
         public string Color { get; set; }
         public string Make { get; set; }
         public int Price { get; set; }
+        public string RegisteredIn { get; set; }
         public string ConditionDetails { get; set; }
         public int Mileage { get; set; }
         public string AppUserId { get; set; }

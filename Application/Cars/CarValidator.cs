@@ -1,5 +1,4 @@
 using API.DTOs;
-using Domain;
 using FluentValidation;
 
 namespace Application.Cars
