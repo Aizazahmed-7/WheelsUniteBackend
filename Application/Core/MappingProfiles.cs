@@ -14,7 +14,8 @@ namespace Application.Core
             string currentUsername = null;
             CreateMap<Event, Event>();
             CreateMap<Event, EventDto>()
-                .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName));
+                .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("dd MMM yyyy")));
 
 
             CreateMap<Location, LocationDto>()
@@ -35,7 +36,8 @@ namespace Application.Core
 
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
-                .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url));
+                .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt.ToString("dd MMM yyyy")));
 
             CreateMap<Reply, ReplyDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
