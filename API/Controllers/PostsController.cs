@@ -17,5 +17,12 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new List.Query()));
         }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> ListByUser(string username)
+        {
+            return HandleResult(await Mediator.Send(new ListByUser.Query { Username = username }));
+        }
+
     }
 }

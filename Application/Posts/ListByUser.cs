@@ -1,19 +1,19 @@
-
-
 using Application.Core;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Posts
 {
-    public class List
+    public class ListByUser
     {
-        public class Query : IRequest<Result<List<PostDto>>>{}
+        public class Query : IRequest<Result<List<PostDto>>>
+        {
+            public string Username { get; set; }
+        }
 
         public class Handler : IRequestHandler<Query, Result<List<PostDto>>>
         {
@@ -32,28 +32,15 @@ namespace Application.Posts
             {
                 string currentUser =  _userAccessor.GetUsername();
 
-                var  profiles = await _context.Followings
-                            .Where(x => x.Observer.UserName == currentUser)
-                            .Select(u => u.Target)
-                            .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
-                            .ToListAsync();
-
-                var profileUsernames = profiles.Select(p => p.Username).ToList();
-
                 var posts = await _context.Posts
-                    .Where(p => profileUsernames.Contains(p.AppUser.UserName))
                     .Include(p => p.AppUser)
+                    .Where(p => p.AppUser.UserName == request.Username)
                     .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
                     .ToListAsync();
-
-                posts.AddRange(await _context.Posts
-                    .Where(p => !profileUsernames.Contains(p.AppUser.UserName))
-                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider, new { currentUsername = currentUser })
-                    .ToListAsync());
 
                 return Result<List<PostDto>>.Success(posts);
             }
         }
 
-    }
+    }  
 }

@@ -2,11 +2,15 @@
 using System.Security.Claims;
 using API.DTOs;
 using API.Services;
+using Application.Posts;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace API.Controllers
 {
@@ -16,11 +20,14 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly TokenService _tokenService;
-
-        public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
+        private readonly DataContext _context;
+        private readonly IMapper _mapper;
+        public AccountController(UserManager<AppUser> userManager, TokenService tokenService , DataContext context, IMapper mapper)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _context = context;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -85,9 +92,15 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
-
+            if(user == null) return NotFound();
+            var UserPostsCount = await _context.Posts.Where(x => x.AppUserId == user.Id).CountAsync();
+            var UserFollowers = await _context.Followings.Where(x => x.TargetId == user.Id).CountAsync();
+            var UserFollowing = await _context.Followings.Where(x => x.ObserverId == user.Id).CountAsync();
             return new UserDto
             {
+                FollowersCount = UserFollowers,
+                FollowingCount = UserFollowing,
+                PostsCount = UserPostsCount,
                 DisplayName = user.DisplayName,
                 Image = user?.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
                 Token = _tokenService.CreateToken(user),

@@ -46,9 +46,13 @@ namespace Application.Core
 
 
             CreateMap<Post, PostDto>()
-                .ForMember(d => d.Username, o => o.MapFrom(s => s.AppUser.UserName))
                 .ForMember(d => d.LikesCount, o => o.MapFrom(s => s.Likes.Count))
-                .ForMember(d => d.IsLiked, o => o.MapFrom(s => s.Likes.Any(x => x.Username == currentUsername)));
+                .ForMember(d => d.IsLiked, o => o.MapFrom(s => s.Likes.Any(x => x.Username == currentUsername)))
+                .ForMember(d => d.User, o => o.MapFrom(s => s.AppUser));
+            CreateMap<AppUser, PostDto.SimpleUser>()
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.UserName))
+                .ForMember(d => d.DisplayPhoto, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
+
 
             CreateMap<Domain.CarForSale , CarForSaleListDTO>()
                 .ForMember(d => d.Make , o => o.MapFrom(s => s.Car.Make))
