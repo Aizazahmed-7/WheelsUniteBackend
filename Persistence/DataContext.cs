@@ -21,6 +21,7 @@ namespace Persistence
         public DbSet<Post> Posts { get; set; }
         public DbSet<Reply> Replies { get; set; }
         public DbSet<CarForSale> CarsForSale { get; set; }
+        public DbSet<Chat> Chats { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {

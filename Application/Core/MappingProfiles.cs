@@ -5,6 +5,7 @@ using Application.Events;
 using Application.Comments;
 using Application.Posts;
 using Application.CarForSale;
+using Application.Chats;
 
 namespace Application.Core
 {
@@ -66,6 +67,12 @@ namespace Application.Core
                 .ForMember(d => d.UserName , o => o.MapFrom(s => s.Car.AppUser.UserName))
                 .ForMember(d => d.Description , o => o.MapFrom(s => s.Description))
                 .ForMember(d => d.Date , o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")));
+
+            CreateMap<Chat, ChatDTO>()
+                .ForMember(d => d.SenderUsername, o => o.MapFrom(s => s.Sender.UserName))
+                .ForMember(d => d.RecipientUsername, o => o.MapFrom(s => s.Recipient.UserName))
+                .ForMember(d => d.SenderImage, o => o.MapFrom(s => s.Sender.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.RecipientImage, o => o.MapFrom(s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url));
                 
         }
     }
