@@ -6,6 +6,7 @@ using Application.Comments;
 using Application.Posts;
 using Application.CarForSale;
 using Application.Chats;
+using Application.Cars;
 
 namespace Application.Core
 {
@@ -17,7 +18,9 @@ namespace Application.Core
             CreateMap<Event, Event>();
             CreateMap<Event, EventDto>()
                 .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName))
-                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")));
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.HostProfilePicture, o => o.MapFrom(s => s.Attendees.FirstOrDefault(x => x.IsHost).AppUser.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.PhotoUrl, o => o.MapFrom(s => s.Photo.Url));
 
 
             CreateMap<Location, LocationDto>()
@@ -34,7 +37,11 @@ namespace Application.Core
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.Followings.Count))
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
-                .ForMember(d => d.Following, o => o.MapFrom(s => s.Followers.Any(x => x.Observer.UserName == currentUsername)));
+                .ForMember(d => d.Following, o => o.MapFrom(s => s.Followers.Any(x => x.Observer.UserName == currentUsername)))
+                .ForMember(d => d.Cars, o => o.MapFrom(s => s.Cars));
+
+            CreateMap<Car,CarDTO>();
+
 
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
@@ -72,7 +79,8 @@ namespace Application.Core
                 .ForMember(d => d.SenderUsername, o => o.MapFrom(s => s.Sender.UserName))
                 .ForMember(d => d.RecipientUsername, o => o.MapFrom(s => s.Recipient.UserName))
                 .ForMember(d => d.SenderImage, o => o.MapFrom(s => s.Sender.Photos.FirstOrDefault(x => x.IsMain).Url))
-                .ForMember(d => d.RecipientImage, o => o.MapFrom(s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url));
+                .ForMember(d => d.RecipientImage, o => o.MapFrom(s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url))
+                .ForMember(d => d.ConversationId, o => o.MapFrom(s => s.ConversationId));
                 
         }
     }

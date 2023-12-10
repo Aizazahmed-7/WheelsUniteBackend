@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -14,14 +15,19 @@ namespace Application.Cars
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public AddCarDTO car { get; set; }
+            // public AddCarDTO car { get; set; }
+            public IFormFile File { get; set; }
+            public string Make { get; set; }
+            public string Model { get; set; }
+            public string Color { get; set; }
+
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.car).SetValidator(new CarValidator());
+                // RuleFor(x => x.car).SetValidator(new CarValidator());
             }
         }
 
@@ -29,8 +35,10 @@ namespace Application.Cars
         {
             private readonly DataContext _Context;
             private readonly IUserAccessor _userAccessor;
-            public Handler(DataContext context, IUserAccessor userAccessor)
+            private readonly IPhotoAccessor _photoAccessor;
+            public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor)
             {
+                _photoAccessor = photoAccessor;
                 _Context = context;
                 _userAccessor = userAccessor;
             }
@@ -41,11 +49,21 @@ namespace Application.Cars
 
                 if (user == null) return null;
 
+                var photoUploadResult = await _photoAccessor.AddPhoto(request.File);
+
+                var photo = new Photo
+                {
+                    Url = photoUploadResult.Url,
+                    Id = photoUploadResult.PublicId,
+                    IsMain = true
+                };
+
                 var car = new Car
                 {
-                    Make = request.car.Make,
-                    Model = request.car.Model,
-                    Color = request.car.Color,
+                    Make = request.Make,
+                    Model = request.Model,
+                    Color = request.Color,
+                    Photos = new List<Photo> { photo }
                 };
 
                 if (user.Cars.Count == 0)

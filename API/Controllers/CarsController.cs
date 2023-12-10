@@ -9,9 +9,9 @@ namespace API.Controllers
     public class CarsController : BaseApiController
     {
         [HttpPost]
-        public async Task<IActionResult> Create(AddCarDTO car)
+        public async Task<IActionResult> Create([FromForm] Add.Command command)
         {
-            return HandleResult(await this.Mediator.Send(new Add.Command { car = car }));
+            return HandleResult(await this.Mediator.Send(command));
         }
 
         [HttpPut]

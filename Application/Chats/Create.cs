@@ -55,6 +55,7 @@ namespace Application.Chats
                     Body = request.Body,
                     Sender = sender,
                     Recipient = recipient,
+                    ConversationId = string.Join("_", new[] {sender.UserName,recipient.UserName }.OrderBy(u => u))
                 };
 
                 _context.Chats.Add(chat);

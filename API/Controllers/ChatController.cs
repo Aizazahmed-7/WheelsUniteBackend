@@ -6,6 +6,13 @@ namespace API.Controllers
 {
     public class ChatController : BaseApiController
     {
+
+        [HttpGet]
+        public async Task<ActionResult<List<ChatDTO>>> List()
+        {
+            return HandleResult(await this.Mediator.Send(new ListCurrent.Query()));
+        }
+
         [HttpGet("{username}")]
         public async Task<ActionResult<List<ChatDTO>>> List(string username)
         {

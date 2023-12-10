@@ -1,7 +1,10 @@
 
-namespace Domain
+
+using Domain;
+
+namespace Application.Cars
 {
-    public class Car
+    public class CarDTO
     {
         public Guid Id { get; set; }
         public string Model { get; set; }
@@ -11,9 +14,8 @@ namespace Domain
         public string RegisteredIn { get; set; }
         public string ConditionDetails { get; set; }
         public int Mileage { get; set; }
-        public ICollection<Photo> Photos { get; set; }
         public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
         public bool IsMain { get; set; }
     }
 }

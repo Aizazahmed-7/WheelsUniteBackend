@@ -7,5 +7,6 @@ namespace Domain
         public AppUser Sender { get; set; }
         public AppUser Recipient { get; set; }
         public DateTime CreatedAt  { get; set; } = DateTime.UtcNow;
+        public string ConversationId { get; set; }
     }
 }

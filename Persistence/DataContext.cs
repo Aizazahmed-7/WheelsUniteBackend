@@ -23,6 +23,16 @@ namespace Persistence
         public DbSet<CarForSale> CarsForSale { get; set; }
         public DbSet<Chat> Chats { get; set; }
         
+
+        protected override void OnConfiguring(
+        DbContextOptionsBuilder 
+        optionsBuilder
+    )
+    {
+        optionsBuilder
+            .LogTo(System.Console.WriteLine);
+    }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

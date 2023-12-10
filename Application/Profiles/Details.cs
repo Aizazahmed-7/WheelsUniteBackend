@@ -1,7 +1,9 @@
+using Application.Cars;
 using Application.Core;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -33,6 +35,11 @@ namespace Application.Profiles
                 var user = await _context.Users
                 .ProjectTo<Profile>(_mapper.ConfigurationProvider, new { currentUsername = _UserAccessor.GetUsername() })
                 .SingleOrDefaultAsync(x => x.Username == request.Username);
+
+                if (user == null) return null;
+
+                var postCount = await _context.Posts.CountAsync(x => x.AppUser.UserName == request.Username);
+                user.PostCount = postCount;
 
                 return Result<Profile>.Success(user);
             }

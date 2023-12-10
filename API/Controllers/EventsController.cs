@@ -21,9 +21,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEvent(Event Event)
+        public async Task<IActionResult> CreateEvent([FromForm] Create.Command command)
         {
-            return HandleResult(await this.Mediator.Send(new Create.Command { Event = Event }));
+            return HandleResult(await this.Mediator.Send(command));
 
         }
 
