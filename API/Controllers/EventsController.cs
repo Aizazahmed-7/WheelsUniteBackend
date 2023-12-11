@@ -20,6 +20,12 @@ namespace API.Controllers
             return HandleResult(await this.Mediator.Send(new Details.Query { Id = Guid.Parse(id) }));
         }
 
+        [HttpGet("{username}/user")]
+        public async Task<IActionResult> GetEventsByUser(string username, string predicate)
+        {
+            return HandleResult(await this.Mediator.Send(new ListByUser.Query { Username = username }));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromForm] Create.Command command)
         {
