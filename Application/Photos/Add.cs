@@ -39,18 +39,15 @@ namespace Application.Photos
                 var photo = new Photo
                 {
                     Url = photoUploadResult.Url,
-                    Id = photoUploadResult.PublicId
+                    Id = photoUploadResult.PublicId,
+                    IsMain = true
                 };
 
-                if (user.Photos.Count == 0)
+                foreach (var item in user.Photos)
                 {
-                    photo.IsMain = true;
+                    item.IsMain = false;
                 }
-                else
-                {
-                    photo.IsMain = false;
-                }
-
+              
                 user.Photos.Add(photo);
 
                 var result = await _context.SaveChangesAsync() > 0;

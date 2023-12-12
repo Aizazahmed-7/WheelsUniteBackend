@@ -11,5 +11,11 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Details.Query { Username = username }));
         }
 
+        [HttpGet("search/{searchTerm?}")]
+        public async Task<IActionResult> SearchProfiles(string searchTerm)
+        {
+            return HandleResult(await Mediator.Send(new Search.Query { SearchTerm = searchTerm }));
+        }
+
     }
 }

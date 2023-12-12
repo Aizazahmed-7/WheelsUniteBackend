@@ -81,7 +81,12 @@ namespace Application.Core
                 .ForMember(d => d.SenderImage, o => o.MapFrom(s => s.Sender.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.RecipientImage, o => o.MapFrom(s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.ConversationId, o => o.MapFrom(s => s.ConversationId));
+
+             CreateMap<AppUser,Profiles.UserDto>()
+                .ForMember(d => d.userName , o => o.MapFrom(s => s.UserName))
+                .ForMember(d => d.displayPhoto , o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));   
                 
         }
+
     }
 }
