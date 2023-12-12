@@ -27,7 +27,7 @@ namespace Application.Comments
             public async Task<Result<List<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var Comments = await _Context.Comments
-                    // .Where(x => x.Post.Id == request.EventId)
+                    .Where(x => x.Post.Id == request.PostId)
                     .OrderBy(x => x.CreatedAt)
                     .ProjectTo<CommentDto>(_Mapper.ConfigurationProvider)
                     .ToListAsync();

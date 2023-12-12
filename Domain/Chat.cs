@@ -6,7 +6,7 @@ namespace Domain
         public string Body { get; set; }
         public AppUser Sender { get; set; }
         public AppUser Recipient { get; set; }
-        public DateTime CreatedAt  { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt  { get; set; } = DateTime.Now;
         public string ConversationId { get; set; }
     }
 }
