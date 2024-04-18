@@ -44,6 +44,7 @@ namespace Application.CarForSale
 
                 if (car.AppUserId != user.Id) return Result<Unit>.Unauthorized();
 
+                car.Price = request.Object.Price;
                 var carForSaleExists = await _Context.CarsForSale.AnyAsync(x => x.Car.Id == request.Object.CarId);
                 if (carForSaleExists) return Result<Unit>.Failure("Car is already for sale");
 
@@ -59,9 +60,16 @@ namespace Application.CarForSale
                     Description = request.Object.Description,
                     Date = DateTime.Now,
                     Location = newLocation,
+                    Contact = request.Object.Contact,
+                    Engine = request.Object.Engine,
+                    Transmission = request.Object.Transmission,
+                    StartingBid = request.Object.StartingBid,
+                    HighestBid = request.Object.StartingBid,
                 };
 
                 _Context.CarsForSale.Add(carForSale);
+
+
 
                 var result = await _Context.SaveChangesAsync() > 0;
                 if (!result) return Result<Unit>.Failure("Failed to add car for sale");

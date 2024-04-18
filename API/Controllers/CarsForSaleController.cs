@@ -25,5 +25,11 @@ namespace API.Controllers
             return HandleResult(await this.Mediator.Send(new Details.Query { Id = id }));
         }
 
+        [HttpGet("mylist")]
+        public async Task<IActionResult> GetMyCarsForSale()
+        {
+            return HandleResult(await this.Mediator.Send(new MyList.Query()));
+        }
+
     }
 }

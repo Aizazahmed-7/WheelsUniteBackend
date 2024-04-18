@@ -40,7 +40,10 @@ namespace Application.Core
                 .ForMember(d => d.Following, o => o.MapFrom(s => s.Followers.Any(x => x.Observer.UserName == currentUsername)))
                 .ForMember(d => d.Cars, o => o.MapFrom(s => s.Cars));
 
-            CreateMap<Car,CarDTO>();
+            CreateMap<Car, CarDTO>();
+
+            CreateMap<Car, Car>()
+                .ForMember(d => d.AppUser, o => o.Ignore());
 
 
             CreateMap<Comment, CommentDto>()
@@ -62,18 +65,24 @@ namespace Application.Core
                 .ForMember(d => d.DisplayPhoto, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
 
 
-            CreateMap<Domain.CarForSale , CarForSaleListDTO>()
-                .ForMember(d => d.Make , o => o.MapFrom(s => s.Car.Make))
-                .ForMember(d => d.Model , o => o.MapFrom(s => s.Car.Model))
-                .ForMember(d => d.Price , o => o.MapFrom(s => s.Car.Price))
-                .ForMember(d => d.Location , o => o.MapFrom(s => s.Location));
+            CreateMap<Domain.CarForSale, CarForSaleListDTO>()
+                .ForMember(d => d.Make, o => o.MapFrom(s => s.Car.Make))
+                .ForMember(d => d.Model, o => o.MapFrom(s => s.Car.Model))
+                .ForMember(d => d.Price, o => o.MapFrom(s => s.Car.Price))
+                .ForMember(d => d.Location, o => o.MapFrom(s => s.Location));
 
-            CreateMap<Domain.CarForSale , CarForSaleDetailsDTO>()
-                .ForMember(d => d.Car , o => o.MapFrom(s => s.Car))
-                .ForMember(d => d.Location , o => o.MapFrom(s => s.Location))
-                .ForMember(d => d.UserName , o => o.MapFrom(s => s.Car.AppUser.UserName))
-                .ForMember(d => d.Description , o => o.MapFrom(s => s.Description))
-                .ForMember(d => d.Date , o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")));
+            CreateMap<Domain.CarForSale, CarForSaleDetailsDTO>()
+                .ForMember(d => d.Car, o => o.MapFrom(s => s.Car))
+                .ForMember(d => d.Location, o => o.MapFrom(s => s.Location))
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.Car.AppUser.UserName))
+                .ForMember(d => d.Description, o => o.MapFrom(s => s.Description))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.StartingBid, o => o.MapFrom(s => s.StartingBid))
+                .ForMember(d => d.Transmission, o => o.MapFrom(s => s.Transmission))
+                .ForMember(d => d.Engine, o => o.MapFrom(s => s.Engine))
+                .ForMember(d => d.Contact, o => o.MapFrom(s => s.Contact))
+                .ForMember(d => d.HighestBid, o => o.MapFrom(s => s.HighestBid))
+                ;
 
             CreateMap<Chat, ChatDTO>()
                 .ForMember(d => d.SenderUsername, o => o.MapFrom(s => s.Sender.UserName))
@@ -82,10 +91,10 @@ namespace Application.Core
                 .ForMember(d => d.RecipientImage, o => o.MapFrom(s => s.Recipient.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(d => d.ConversationId, o => o.MapFrom(s => s.ConversationId));
 
-             CreateMap<AppUser,Profiles.UserDto>()
-                .ForMember(d => d.userName , o => o.MapFrom(s => s.UserName))
-                .ForMember(d => d.displayPhoto , o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));   
-                
+            CreateMap<AppUser, Profiles.UserDto>()
+               .ForMember(d => d.userName, o => o.MapFrom(s => s.UserName))
+               .ForMember(d => d.displayPhoto, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
+
         }
 
     }
