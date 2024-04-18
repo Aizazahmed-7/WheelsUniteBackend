@@ -28,7 +28,7 @@ namespace Application.CarForSale
         {
             private readonly DataContext _Context;
             private readonly IUserAccessor _userAccessor;
-            public Handler(DataContext context , IUserAccessor userAccessor)
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 _userAccessor = userAccessor;
                 _Context = context;
@@ -42,12 +42,12 @@ namespace Application.CarForSale
                 var car = await _Context.Cars.FindAsync(request.Object.CarId);
                 if (car == null) return null;
 
-                if(car.AppUserId != user.Id) return Result<Unit>.Unauthorized();
+                if (car.AppUserId != user.Id) return Result<Unit>.Unauthorized();
 
                 var carForSaleExists = await _Context.CarsForSale.AnyAsync(x => x.Car.Id == request.Object.CarId);
                 if (carForSaleExists) return Result<Unit>.Failure("Car is already for sale");
-                
-                var newLocation = new Location 
+
+                var newLocation = new Location
                 {
                     Latitude = request.Object.Location.Latitude,
                     Longitude = request.Object.Location.Longitude,
@@ -58,7 +58,7 @@ namespace Application.CarForSale
                     Car = car,
                     Description = request.Object.Description,
                     Date = DateTime.Now,
-                    Location  = newLocation,
+                    Location = newLocation,
                 };
 
                 _Context.CarsForSale.Add(carForSale);
@@ -67,7 +67,7 @@ namespace Application.CarForSale
                 if (!result) return Result<Unit>.Failure("Failed to add car for sale");
 
                 return Result<Unit>.Success(Unit.Value);
-          
+
             }
         }
 

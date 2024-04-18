@@ -1,5 +1,3 @@
-
-using API.DTOs;
 using Application.Cars;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +6,13 @@ namespace API.Controllers
 {
     public class CarsController : BaseApiController
     {
+
+        [HttpGet]
+        public async Task<IActionResult> GetCars()
+        {
+            return HandleResult(await this.Mediator.Send(new UserCarList.Query()));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Add.Command command)
         {

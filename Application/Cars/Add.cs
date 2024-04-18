@@ -1,5 +1,3 @@
-
-using API.DTOs;
 using Application.Core;
 using Application.Interfaces;
 using Domain;
@@ -20,6 +18,7 @@ namespace Application.Cars
             public string Make { get; set; }
             public string Model { get; set; }
             public string Color { get; set; }
+            public int Mileage { get; set; }
 
         }
 
@@ -60,6 +59,7 @@ namespace Application.Cars
 
                 var car = new Car
                 {
+                    Mileage = request.Mileage,
                     Make = request.Make,
                     Model = request.Model,
                     Color = request.Color,
